@@ -43,6 +43,8 @@ param (
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
+
 
 function Invoke-EtcdCI() {
     [CmdletBinding()]
