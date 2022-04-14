@@ -54,7 +54,7 @@ function Invoke-EtcdCI {
         $Version,
         [Parameter()]
         [Switch]
-        $Debug
+        $Debug,
         [Parameter()]
         [ValidateScript({ 
             if (Test-Path $PSScriptRoot\scripts\windows\$_.ps1) {
