@@ -66,6 +66,10 @@ jobs:
       matrix:
         os: ["windows-latest"]
         go: ["1.17.8"]
+    env:
+      GIT_ORG: ${{ github.repository_owner }}
+      GIT_REPO: ${{ github.events.repository.name }}
+      GO_VERSION: ${{ matrix.go }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2

@@ -16,7 +16,6 @@ function Build {
         [Parameter(Mandatory = $true)]
         [String]
         $Version,
-        [Parameter()]
         [Switch]
         $Debug,
         [parameter()]
@@ -48,7 +47,7 @@ trap {
     Write-Host -NoNewline -ForegroundColor Red "[ERROR]: "
     Write-Host -ForegroundColor Red "$_"
 
-    popd
+    Pop-Location
     exit 1
 }
 
@@ -63,7 +62,7 @@ $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "$env:ORG/$env:REPO" -Commit $env:COMMIT -Output "bin\etcd.exe"
-Build -BuildPath "$env:ORG/$env:REPO/etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe"
+Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO" -Commit $env:COMMIT -Output "bin\etcd.exe"
+Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO/etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe"
 
 Pop-Location
