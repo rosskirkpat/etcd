@@ -32,6 +32,7 @@ param (
     [Switch]
     $GoDebug,
     [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
+    [AllowEmptyString()]
     [String]
     $Script="ci"  
 )
