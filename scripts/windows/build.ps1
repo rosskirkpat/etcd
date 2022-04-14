@@ -7,7 +7,7 @@ param (
 )
 $ErrorActionPreference = 'Stop'
 
-Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
+Import-Module -WarningAction Ignore -Name "$PSScriptRoot\utils.psm1"
 
 
 function Build {
