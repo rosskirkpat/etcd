@@ -204,8 +204,8 @@ function Install-Ginkgo() {
     # install ginkgo
     if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
         Push-Location c:\
-        go install github.com/onsi/ginkgo/ginkgo
-        go install github.com/onsi/gomega/...
+        go install github.com/onsi/ginkgo/ginkgo@latest
+        go get github.com/onsi/gomega/...
         Pop-Location
     } else {
         Write-Host ('{0} found in PATH, skipping install ...' -f $(ginkgo version))
