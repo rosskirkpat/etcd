@@ -33,17 +33,14 @@ param (
     $GoDebug,
     [Parameter()]
     [ValidateScript({ 
-        if (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1") {
-            $true
-        } else {
+        if (-Not Test-Path "$PSScriptRoot\scripts\windows\$_.ps1") {
             throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
         }
     })]
     [String]
-    $Script
-    
-
+    $Script   
 )
+
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 Set-StrictMode -Version Latest
@@ -61,9 +58,7 @@ function Invoke-EtcdBuild() {
         $GoDebug,
         [Parameter()]
         [ValidateScript({ 
-            if (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1") {
-                $true
-            } else {
+            if (-Not Test-Path "$PSScriptRoot\scripts\windows\$_.ps1") {
                 throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
             }
         })]
