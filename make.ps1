@@ -146,7 +146,7 @@ function Install-Go() {
     if ((Get-Command "go" -ErrorAction SilentlyContinue) -eq $null) {
         Write-Host ("go not found in PATH, installing go{0}" -f $env:GOLANG_VERSION)
         Push-Location C:\
-        Invoke-WebRequest -Uri ('https://golang.org/dl/go{0}.windows-amd64.zip' -f $env:GOLANG_VERSION) -OutFile 'go.zip'
+        Invoke-WebRequest -Uri ('https://go.dev/dl/go{0}.windows-amd64.zip' -f $env:GOLANG_VERSION) -OutFile 'go.zip'
         Expand-Archive go.zip -DestinationPath C:\
         Remove-Item go.zip -Force
         Pop-Location
