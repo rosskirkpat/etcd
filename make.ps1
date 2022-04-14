@@ -32,7 +32,7 @@ param (
     [Switch]
     $Debug,
     [Parameter()]
-    [ValidateSet(Test-Path $PSScriptRoot\scripts\windows\$_.ps1)]
+    [ValidateScript(Test-Path $PSScriptRoot\scripts\windows\$_.ps1)]
     [String]
     $Script
 )
@@ -50,7 +50,7 @@ function Invoke-EtcdCI {
         [Switch]
         $Debug
         [Parameter()]
-        [ValidateSet(Test-Path $PSScriptRoot\scripts\windows\$_.ps1)]
+        [ValidateScript(Test-Path $PSScriptRoot\scripts\windows\$_.ps1)]
         [String]
         $Script
     )
