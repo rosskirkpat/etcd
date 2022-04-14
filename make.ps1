@@ -25,8 +25,8 @@
 # Make sure these params matches the CmdletBinding below
 param (
     [Parameter(Mandatory = $true)]
-    [String]
     [ValidateNotNullOrEmpty()]
+    [String]
     $Version,
     [Parameter()]
     [Switch]
@@ -49,8 +49,8 @@ function Invoke-EtcdCI {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [String]
         [ValidateNotNullOrEmpty()]
+        [String]
         $Version,
         [Parameter()]
         [Switch]
@@ -73,7 +73,7 @@ function Invoke-EtcdCI {
         }
 
         if ($Debug) {
-            $env:DEBUG = true
+            $env:DEBUG = "true"
         }
         # Default invocation is full CI
         $env:SCRIPT_PATH = "ci"
