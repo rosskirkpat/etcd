@@ -70,7 +70,7 @@ function Invoke-EtcdBuild() {
         $Version,
         [Switch]
         $GoDebug,
-        [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
+        # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
         # if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
         #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
         #     }
