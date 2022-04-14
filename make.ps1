@@ -28,7 +28,7 @@ Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.p
 
 param (
     [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
+    # [ValidateNotNullOrEmpty()]
     [String]
     $Version,
     [Switch]
@@ -51,7 +51,7 @@ function Invoke-EtcdBuild() {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
+        # [ValidateNotNullOrEmpty()]
         [String]
         $Version,
         [Switch]
