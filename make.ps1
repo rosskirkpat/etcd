@@ -40,6 +40,8 @@ param (
     })]
     [String]
     $Script
+    
+
 )
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
@@ -47,7 +49,7 @@ Set-StrictMode -Version Latest
 Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 
 
-function Invoke-EtcdCI() {
+function Invoke-EtcdBuild() {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
@@ -67,7 +69,48 @@ function Invoke-EtcdCI() {
         [String]
         $Script
     )
+
+    # TODO: Integration Tests
+    if ($env:SCRIPT_PATH -eq "integration") {
+        Invoke-EtcdIntegrationTests
+    }
+
+    # TODO: Additional Tests
+    if ($env:SCRIPT_PATH -eq "all") {
+        Invoke-AllEtcd
+    }
+
+    if (Test-Path $env:SCRIPT_PATH) {
+        Write-Host ("Running scripts\windows\{0}.ps1" -f $env:SCRIPT_PATH)
+        Invoke-Script -File $env:SCRIPT_PATH
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
+        exit 0
+    }
 }
+
+# function Invoke-EtcdCI() {
+#     [CmdletBinding()]
+#     param (
+#         [Parameter(Mandatory = $true)]
+#         [ValidateNotNullOrEmpty()]
+#         [String]
+#         $Version,
+#         [Switch]
+#         $GoDebug,
+#         [Parameter()]
+#         [ValidateScript({ 
+#             if (Test-Path $PSScriptRoot\scripts\windows\$_.ps1) {
+#                 $true
+#             } else {
+#                 throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
+#             }
+#         })]
+#         [String]
+#         $Script
+#     )
+# }
 
 function Get-Args() {
     if ($Version) {
@@ -153,7 +196,7 @@ function Install-Go() {
         Pop-Location
         Write-Host ('Installed go{0}' -f $env:GOLANG_VERSION)
     } else {
-        Write-Host ('{0} found in PATH, skipping install ...' -f $(go version))
+        Write-Host ('{0} found in PATH, skipping go install ...' -f $(go version))
     }
 }
 
@@ -161,8 +204,8 @@ function Install-Ginkgo() {
     # install ginkgo
     if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
         Push-Location c:\
-        go get -u github.com/onsi/ginkgo/ginkgo
-        go get -u github.com/onsi/gomega/...
+        go install github.com/onsi/ginkgo/ginkgo
+        go install github.com/onsi/gomega/...
         Pop-Location
     } else {
         Write-Host ('{0} found in PATH, skipping install ...' -f $(ginkgo version))
@@ -198,34 +241,11 @@ function Invoke-AllEtcd() {
     exit 0
 }
 
-function Invoke-EtcdBuild() {
-    Test-Architecture
-    Get-Args
-    Set-Environment
-    Set-Path
-    Initialize-Environment
+# Invoke-EtcdCI
+Get-Args
+Test-Architecture
+Initialize-Environment
+Set-Environment
+Set-Path
 
-    # TODO: Integration Tests
-    if ($env:SCRIPT_PATH -eq "integration") {
-        Invoke-EtcdIntegrationTests
-    }
-
-    # TODO: Additional Tests
-    if ($env:SCRIPT_PATH -eq "all") {
-        Invoke-AllEtcd
-    }
-
-    if (Test-Path $env:SCRIPT_PATH) {
-        Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
-        Write-Host ("Running scripts\windows\{0}.ps1" -f $env:SCRIPT_PATH)
-        Invoke-Script -File $env:SCRIPT_PATH
-        if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-        }
-        exit 0
-    }
-}
-
-Invoke-EtcdBuild
-
-Invoke-EtcdCI
+Invoke-EtcdBuild -Version $env:Version
