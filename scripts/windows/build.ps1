@@ -1,19 +1,19 @@
 #Requires -Version 5.0
-param (
-    [Parameter(Mandatory = $true)]
-    [String]
-    [ValidateNotNullOrEmpty()]
-    $Version
-)
+# param (
+#     [Parameter(Mandatory = $true)]
+#     [String]
+#     [ValidateNotNullOrEmpty()]
+#     $Version
+# )
 $ErrorActionPreference = 'Stop'
 
-Import-Module -WarningAction Ignore -Name "$PSScriptRoot\utils.psm1"
+Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 
 
 function Build {
-    [CmdletBinding()]
+    # [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [String]
         $Version,
         [parameter()]
@@ -36,7 +36,7 @@ function Build {
 
     $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
     go build -ldflags $goFlags -o $Output $BuildPath
-    if (-not $?) {
+    if (Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"
     }
 }
