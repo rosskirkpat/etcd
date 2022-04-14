@@ -28,7 +28,6 @@ param (
     [ValidateNotNullOrEmpty()]
     [String]
     $Version,
-    [Parameter()]
     [Switch]
     $Debug,
     [Parameter()]
@@ -45,14 +44,13 @@ param (
 $ErrorActionPreference = 'Stop'
 # Set-StrictMode -Version Latest
 
-function Invoke-EtcdCI {
+function Invoke-EtcdCI() {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Version,
-        [Parameter()]
         [Switch]
         $Debug,
         [Parameter()]
@@ -67,14 +65,17 @@ function Invoke-EtcdCI {
         $Script
     )
 
+    process {
+        if ($Debug.IsPresent) {
+            $env:DEBUG = "true"
+        }
+    }
+
     function Get-Args {
         if ($Version) {
             $env:VERSION = $Version
         }
 
-        if ($Debug) {
-            $env:DEBUG = "true"
-        }
         # Default invocation is full CI
         $env:SCRIPT_PATH = "ci"
         if ($Script) {
