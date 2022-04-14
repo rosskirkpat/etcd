@@ -16,8 +16,6 @@ function Build {
         [Parameter(Mandatory = $true)]
         [String]
         $Version,
-        [Switch]
-        $Debug,
         [parameter()]
         [string]
         $BuildPath,
@@ -30,7 +28,7 @@ function Build {
     )
     $linkFlags = '-s -w -gcflags=all=-dwarf=false -extldflags "-static"'
 
-    if ($Debug) {
+    if ($env:DEBUG) {
         $linkFlags = '-v -gcflags=all="-N -l"'
         Write-Host ('Debug flag passed, changing ldflags to {0}' -f $linkFlags)
         # go install github.com/go-delve/delve/cmd/dlv@latest

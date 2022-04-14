@@ -29,7 +29,7 @@ param (
     [String]
     $Version,
     [Switch]
-    $Debug,
+    $GoDebug,
     [Parameter()]
     [ValidateScript({ 
         if (Test-Path $PSScriptRoot\scripts\windows\$_.ps1) {
@@ -52,7 +52,7 @@ function Invoke-EtcdCI() {
         [String]
         $Version,
         [Switch]
-        $Debug,
+        $GoDebug,
         [Parameter()]
         [ValidateScript({ 
             if (Test-Path $PSScriptRoot\scripts\windows\$_.ps1) {
@@ -71,7 +71,7 @@ function Get-Args() {
         $env:VERSION = $Version
     }
 
-    if ($Debug.IsPresent) {
+    if ($GoDebug.IsPresent) {
         $env:DEBUG = "true"
     }
 
