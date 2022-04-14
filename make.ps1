@@ -42,6 +42,7 @@ param (
     $Script
 )
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 Set-StrictMode -Version Latest
 Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 
@@ -214,10 +215,10 @@ function Invoke-EtcdBuild() {
         Invoke-AllEtcd
     }
 
-    if (Test-Path $SCRIPT_PATH) {
+    if (Test-Path $env:SCRIPT_PATH) {
         Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
         Write-Host ("Running scripts\windows\{0}.ps1" -f $env:SCRIPT_PATH)
-        Invoke-Script -File $SCRIPT_PATH
+        Invoke-Script -File $env:SCRIPT_PATH
         if ($LASTEXITCODE -ne 0) {
             exit $LASTEXITCODE
         }
