@@ -248,4 +248,4 @@ Initialize-Environment
 Set-Environment
 Set-Path
 
-Invoke-EtcdBuild -Version $env:Version
+Invoke-EtcdBuild -Version $env:Version -Script $env:SCRIPT_PATH
