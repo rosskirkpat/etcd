@@ -32,12 +32,18 @@ param (
     [Switch]
     $Debug,
     [Parameter()]
-    [ValidateScript((Test-Path $PSScriptRoot\scripts\windows\$_.ps1))]
+    [ValidateScript({ 
+        if (Test-Path $PSScriptRoot\scripts\windows\$_.ps1) {
+            $true
+        } else {
+            throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
+        }
+    })]
     [String]
     $Script
 )
 $ErrorActionPreference = 'Stop'
-Set-StrictMode -Version Latest
+# Set-StrictMode -Version Latest
 
 function Invoke-EtcdCI {
     [CmdletBinding()]
@@ -50,7 +56,13 @@ function Invoke-EtcdCI {
         [Switch]
         $Debug
         [Parameter()]
-        [ValidateScript((Test-Path $PSScriptRoot\scripts\windows\$_.ps1))]
+        [ValidateScript({ 
+            if (Test-Path $PSScriptRoot\scripts\windows\$_.ps1) {
+                $true
+            } else {
+                throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
+            }
+        })]
         [String]
         $Script
     )
@@ -212,3 +224,4 @@ function Invoke-EtcdCI {
     }
     Invoke-EtcdBuild
 }
+Invoke-EtcdCI
