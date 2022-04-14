@@ -92,22 +92,22 @@ function Set-Environment() {
 
     $GOLANG_VERSION = $env:GOLANG_VERSION
     if (-not $GOLANG_VERSION) {        
-        $GOLANG_VERSION = "1.17.8"
+        $env:GOLANG_VERSION = "1.17.8"
     }
 
     $VERSION = $env:VERSION
     if (-not $VERSION) {
-        $VERSION = $(git rev-parse --short HEAD)
+        $env:VERSION = $(git rev-parse --short HEAD)
     }
 
     $GIT_ORG = $env:GIT_ORG
     if (-not $GIT_ORG) {
-        $GIT_ORG = "etcd-io"
+        $env:GIT_ORG = "etcd-io"
     }
 
     $GIT_REPO = $env:GIT_REPO
     if (-not $GIT_REPO) {
-        $GIT_REPO = "etcd"
+        $env:GIT_REPO = "etcd"
     }
 }
 
