@@ -1,3 +1,4 @@
+#Requires -Version 5.0
 <#
 .SYNOPSIS 
     Native etcd binary builds for Windows
@@ -120,6 +121,7 @@ function Get-Args() {
     if ($GoDebug.IsPresent) {
         $env:DEBUG = "true"
     }
+    
     if ($Script) {
         $env:SCRIPT_PATH = ("{0}\scripts\windows\{1}.ps1" -f $PSScriptRoot, $Script)
     }
@@ -252,4 +254,4 @@ Initialize-Environment
 Set-Environment
 Set-Path
 
-Invoke-EtcdBuild -Version $env:Version -Script $env:SCRIPT_PATH
+Invoke-EtcdBuild -Version $env:VERSION -Script $env:SCRIPT_PATH
