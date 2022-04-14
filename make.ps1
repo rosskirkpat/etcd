@@ -103,6 +103,7 @@ function Invoke-EtcdBuild() {
 function Get-Args() {
     if ($Version) {
         $env:VERSION = $Version
+        $env:GIT_TAG = $env:VERSION
     }
 
     if ($GoDebug.IsPresent) {
@@ -160,8 +161,7 @@ function Test-Architecture() {
 function Install-Git() {
     # install git
     if ((Get-Command "git" -ErrorAction SilentlyContinue) -eq $null) {
-        $GIT_TAG = "v$env:GIT_VERSION.windows.1"
-        $GIT_DOWNLOAD_URL = "https://github.com/git-for-windows/git/releases/download/$GIT_TAG/MinGit-$env:GIT_VERSION-64-bit.zip"
+        $GIT_DOWNLOAD_URL = "https://github.com/git-for-windows/git/releases/download/v$env:GIT_VERSION.windows.1/MinGit-$env:GIT_VERSION-64-bit.zip"
         Push-Location C:\
         Write-Host ('Downloading git ...')
         Expand-Archive -Force -Path c:\git.zip -DestinationPath c:\git\.

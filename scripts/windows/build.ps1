@@ -7,7 +7,7 @@ param (
 )
 $ErrorActionPreference = 'Stop'
 
-Import-Module -WarningAction Ignore -Name "$PSScriptRoot\utils.psm1"
+Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 
 
 function Build {
@@ -37,7 +37,7 @@ function Build {
     $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
     go build -ldflags $goFlags -o $Output $BuildPath
     if (-not $?) {
-        WriteLog-Fatal "go build for $BuildPath failed!"
+        Write-LogFatal "go build for $BuildPath failed!"
     }
 }
 
@@ -60,7 +60,7 @@ $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO" -Commit $env:COMMIT -Output "bin\etcd.exe"
-Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO/etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe"
+Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO" -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
+Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO/etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe" -Version $env:VERSION
 
 Pop-Location
