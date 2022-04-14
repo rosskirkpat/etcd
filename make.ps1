@@ -24,8 +24,6 @@
 #>
 
 # Make sure these params matches the CmdletBinding below
-Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
-
 param (
     [Parameter(Mandatory = $true)]
     # [ValidateNotNullOrEmpty()]
@@ -41,7 +39,7 @@ param (
     [String]
     $Script   
 )
-
+Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 Set-StrictMode -Version Latest
