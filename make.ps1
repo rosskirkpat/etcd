@@ -32,12 +32,8 @@ param (
     [Switch]
     $GoDebug,
     [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
-    #     if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
-    #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
-    #     }
-    # })]
     [String]
-    $Script   
+    $Script="ci"  
 )
 Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 $ErrorActionPreference = 'Stop'
