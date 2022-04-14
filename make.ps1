@@ -41,6 +41,7 @@ Begin{
     If (-Not (Test-Path "$PSScriptRoot\scripts\windows\$Script.ps1")) {
         throw "$Script is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
     }
+    $env:SCRIPT_PATH = $Script
 }
 Process {
     Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
@@ -56,9 +57,7 @@ Process {
     Set-Path
 
     Invoke-EtcdBuild -Version $env:VERSION -Script $env:SCRIPT_PATH
-
 }
-
 
 
 function Invoke-EtcdBuild() {
