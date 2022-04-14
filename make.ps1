@@ -31,15 +31,34 @@ param (
     $Version,
     [Switch]
     $GoDebug,
-    [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
-    [AllowEmptyString()]
+    # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
+    # [AllowEmptyString()]
     [String]
-    $Script="ci"  
+    $Script = "ci"  # Default invocation is full CI
+    
 )
-Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
-$ErrorActionPreference = 'Stop'
-$ProgressPreference = 'SilentlyContinue'
-Set-StrictMode -Version Latest
+Begin{
+    If (-Not (Test-Path "$PSScriptRoot\scripts\windows\$Script.ps1")) {
+        throw "$Script is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
+    }
+}
+Process {
+    Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
+    $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
+    Set-StrictMode -Version Latest
+
+    # Invoke-EtcdCI
+    Get-Args
+    Test-Architecture
+    Initialize-Environment
+    Set-Environment
+    Set-Path
+
+    Invoke-EtcdBuild -Version $env:VERSION -Script $env:SCRIPT_PATH
+
+}
+
 
 
 function Invoke-EtcdBuild() {
@@ -142,12 +161,6 @@ function Set-Environment() {
         $env:GIT_REPO = "etcd"
     }
 
-    $SCRIPT_PATH = $env:SCRIPT_PATH
-    if (-Not $SCRIPT_PATH) {
-        # Default invocation is full CI
-        $env:SCRIPT_PATH = "ci"
-    }
-
 }
 
 function Set-Path() {
@@ -235,12 +248,3 @@ function Invoke-AllEtcd() {
     }
     exit 0
 }
-
-# Invoke-EtcdCI
-Get-Args
-Test-Architecture
-Initialize-Environment
-Set-Environment
-Set-Path
-
-Invoke-EtcdBuild -Version $env:VERSION -Script $env:SCRIPT_PATH
