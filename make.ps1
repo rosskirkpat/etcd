@@ -120,9 +120,6 @@ function Get-Args() {
     if ($GoDebug.IsPresent) {
         $env:DEBUG = "true"
     }
-
-    # Default invocation is full CI
-    $env:SCRIPT_PATH = "ci"
     if ($Script) {
         $env:SCRIPT_PATH = ("{0}\scripts\windows\{1}.ps1" -f $PSScriptRoot, $Script)
     }
@@ -130,29 +127,36 @@ function Get-Args() {
 
 function Set-Environment() {
     $GIT_VERSION = $env:GIT_VERSION
-    if (-not $GIT_VERSION) {        
+    if (-Not $GIT_VERSION) {        
         $env:GIT_VERSION = "2.35.2"
     }
 
     $GOLANG_VERSION = $env:GOLANG_VERSION
-    if (-not $GOLANG_VERSION) {        
+    if (-Not $GOLANG_VERSION) {        
         $env:GOLANG_VERSION = "1.17.8"
     }
 
     $VERSION = $env:VERSION
-    if (-not $VERSION) {
+    if (-Not $VERSION) {
         $env:VERSION = $(git rev-parse --short HEAD)
     }
 
     $GIT_ORG = $env:GIT_ORG
-    if (-not $GIT_ORG) {
+    if (-Not $GIT_ORG) {
         $env:GIT_ORG = "etcd-io"
     }
 
     $GIT_REPO = $env:GIT_REPO
-    if (-not $GIT_REPO) {
+    if (-Not $GIT_REPO) {
         $env:GIT_REPO = "etcd"
     }
+
+    $SCRIPT_PATH = $env:SCRIPT_PATH
+    if (-Not $SCRIPT_PATH) {
+        # Default invocation is full CI
+        $env:SCRIPT_PATH = "ci"
+    }
+
 }
 
 function Set-Path() {
