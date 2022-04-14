@@ -24,6 +24,8 @@
 #>
 
 # Make sure these params matches the CmdletBinding below
+Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
+
 param (
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
@@ -32,11 +34,11 @@ param (
     [Switch]
     $GoDebug,
     [Parameter()]
-    [ValidateScript({ 
-        if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
-            throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
-        }
-    })]
+    [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
+    #     if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
+    #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
+    #     }
+    # })]
     [String]
     $Script   
 )
@@ -44,7 +46,6 @@ param (
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 Set-StrictMode -Version Latest
-Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 
 
 function Invoke-EtcdBuild() {
@@ -57,11 +58,11 @@ function Invoke-EtcdBuild() {
         [Switch]
         $GoDebug,
         [Parameter()]
-        [ValidateScript({ 
-            if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
-                throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
-            }
-        })]
+        [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
+        # if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
+        #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
+        #     }
+        # })]
         [String]
         $Script
     )
