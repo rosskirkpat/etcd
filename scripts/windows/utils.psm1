@@ -6,23 +6,23 @@ $VerbosePreference = 'SilentlyContinue'
 $DebugPreference = 'SilentlyContinue'
 $InformationPreference = 'SilentlyContinue'
 
-function Log-Info {
+function Write-LogInfo {
     Write-Host -NoNewline -ForegroundColor Blue "INFO: "
     Write-Host -ForegroundColor Gray ("{0,-44}" -f ($Args -join " "))
 }
 
-function Log-Warn {
+function Write-LogWarn {
     Write-Host -NoNewline -ForegroundColor DarkYellow "WARN: "
     Write-Host -ForegroundColor Gray ("{0,-44}" -f ($args -join " "))
 }
 
-function Log-Error {
+function Write-LogError {
     Write-Host -NoNewline -ForegroundColor DarkRed "ERRO "
     Write-Host -ForegroundColor Gray ("{0,-44}" -f ($args -join " "))
 }
 
 
-function Log-Fatal {
+function Write-LogFatal {
     Write-Host -NoNewline -ForegroundColor DarkRed "FATA: "
     Write-Host -ForegroundColor Gray ("{0,-44}" -f ($args -join " "))
 
@@ -37,16 +37,16 @@ function Invoke-Script {
     try {
         Invoke-Expression -Command $File
         if (-not $?) {
-            Log-Fatal "Failed to invoke $File"
+            Write-LogFatal "Failed to invoke $File"
         }
     }
     catch {
-        Log-Fatal "Could not invoke $File, $($_.Exception.Message)"
+        Write-LogFatal "Could not invoke $File, $($_.Exception.Message)"
     }
 }
 
-Export-ModuleMember -Function Log-Info
-Export-ModuleMember -Function Log-Warn
-Export-ModuleMember -Function Log-Error
-Export-ModuleMember -Function Log-Fatal
+Export-ModuleMember -Function Write-LogInfo
+Export-ModuleMember -Function Write-LogWarn
+Export-ModuleMember -Function Write-LogError
+Export-ModuleMember -Function Write-LogFatal
 Export-ModuleMember -Function Invoke-Script

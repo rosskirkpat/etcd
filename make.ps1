@@ -122,7 +122,7 @@ function Set-Path() {
     
 function Test-Architecture() {
     if ($env:PROCESSOR_ARCHITECTURE -ne "AMD64" -or $env:PROCESSOR_ARCHITECTURE -ne "ARM64") {
-        Write-LogFatal "Unsupported architecture $( $env:PROCESSOR_ARCHITECTURE )"
+        Log-Fatal "Unsupported architecture $( $env:PROCESSOR_ARCHITECTURE )"
     }
 }
 
