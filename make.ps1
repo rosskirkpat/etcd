@@ -33,7 +33,6 @@ param (
     $Version,
     [Switch]
     $GoDebug,
-    [Parameter()]
     [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
     #     if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
     #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
@@ -57,7 +56,6 @@ function Invoke-EtcdBuild() {
         $Version,
         [Switch]
         $GoDebug,
-        [Parameter()]
         [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
         # if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
         #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
