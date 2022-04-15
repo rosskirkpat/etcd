@@ -72,6 +72,10 @@ jobs:
       GO_VERSION: ${{ matrix.go }}
     runs-on: ${{ matrix.os }}
     steps:
+    # This step is required as long as the symlinks for client/v3/*_test.go -> tests/integration/clientv3/examples/*_test.go exist
+      - name: core.symlinks
+        run: |
+          git config --global core.symlinks true
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1      

@@ -26,12 +26,11 @@
 # Make sure these params matches the CmdletBinding below
 param (
     [Parameter(Mandatory = $true)]
-    # [ValidateNotNullOrEmpty()]
+    [ValidateNotNullOrEmpty()]
     [String]
     $Version,
     [Switch]
     $GoDebug,
-    # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
     [AllowEmptyString()]
     [String]
     $Script = "build"  # Default invocation is full CI
@@ -42,7 +41,7 @@ function Invoke-EtcdBuild() {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        # [ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [String]
         $Version
         # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
@@ -262,5 +261,7 @@ Test-Architecture
 Initialize-Environment
 Set-Environment
 Set-Path
+# This is required as long as the symlinks for client/v3/*_test.go -> tests/integration/clientv3/examples/*_test.go exist
+git config --global core.symlinks true
 
 Invoke-EtcdBuild -Version $env:VERSION
