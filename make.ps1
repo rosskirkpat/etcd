@@ -166,10 +166,11 @@ function Test-Architecture() {
 
 function Install-Git() {
     # install git
-    if ((Get-Command "git" -ErrorAction SilentlyContinue) -eq $null) {
+    if ($null -eq (Get-Command "git" -ErrorAction SilentlyContinue)) {
         $GIT_DOWNLOAD_URL = "https://github.com/git-for-windows/git/releases/download/v$env:GIT_VERSION.windows.1/MinGit-$env:GIT_VERSION-64-bit.zip"
         Push-Location C:\
         Write-Host ('Downloading git ...')
+        Invoke-WebRequest -Uri $GIT_DOWNLOAD_URL -OutFile 'go.zip'
         Expand-Archive -Force -Path c:\git.zip -DestinationPath c:\git\.
         Remove-Item -Force -Recurse -Path c:\git.zip
         Pop-Location
@@ -180,7 +181,7 @@ function Install-Git() {
     
 function Install-Go() {
     # install go
-    if ((Get-Command "go" -ErrorAction SilentlyContinue) -eq $null) {
+    if ($null -eq (Get-Command "go" -ErrorAction SilentlyContinue)) {
         Write-Host ("go not found in PATH, installing go{0}" -f $env:GOLANG_VERSION)
         Push-Location C:\
         Invoke-WebRequest -Uri ('https://go.dev/dl/go{0}.windows-amd64.zip' -f $env:GOLANG_VERSION) -OutFile 'go.zip'
@@ -195,7 +196,7 @@ function Install-Go() {
 
 function Install-Ginkgo() {
     # install ginkgo
-    if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
+    if ($null -eq (Get-Command "ginkgo" -ErrorAction SilentlyContinue)) {
         Push-Location c:\
         go install github.com/onsi/ginkgo/ginkgo@latest
         go get github.com/onsi/gomega/...
@@ -241,14 +242,14 @@ function Invoke-AllEtcd() {
 }
 
 if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$Script.ps1")) {
-    throw "$Script is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
+    throw "$Script is not a valid script name in $(Write-Output $PSScriptRoot\scripts\windows)"
 }
 $env:SCRIPT_PATH = $Script
 
-# if ($GoDebug.IsPresent) {
-#     Write-InfoLog "Debug mode is enabled"
-#     $env:DEBUG = "true"
-# }
+if ($GoDebug.IsPresent) {
+    Write-InfoLog "Debug mode is enabled"
+    $env:DEBUG = "true"
+}
 
 Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 $ErrorActionPreference = 'Stop'
