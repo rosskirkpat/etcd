@@ -36,9 +36,9 @@ function Build {
 
     $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
     if ($env:DEBUG){
-        Write-Host "[DEBUG] Running command: go build -ldflags $linkerFlags -o $Output $BuildPath"
+        Write-Host "[DEBUG] Running command: go build -o $Output -ldflags $linkerFlags $BuildPath"
     }
-    go build -ldflags $linkerFlags -o $Output $BuildPath
+    go build -o $Output -ldflags $linkerFlags $BuildPath
     if (-Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"
     }
@@ -66,7 +66,7 @@ $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "server/." -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
-Build -BuildPath "etcdctl/." -Commit $env:COMMIT -Output "bin\etcdctl.exe" -Version $env:VERSION
+Build -BuildPath "server\." -Commit $env:COMMIT -Output "..\bin\etcd.exe" -Version $env:VERSION
+Build -BuildPath "etcdctl\." -Commit $env:COMMIT -Output "..\bin\etcdctl.exe" -Version $env:VERSION
 
 Pop-Location
