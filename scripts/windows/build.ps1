@@ -35,6 +35,9 @@ function Build {
     }
 
     $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
+    if ($env:DEBUG){
+        Write-Host "[DEBUG] Running command: go build -ldflags $goFlags -o $Output $BuildPath"
+    }
     go build -ldflags $goFlags -o $Output $BuildPath
     if (-Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"
@@ -53,14 +56,17 @@ Invoke-Script -File "$PSScriptRoot\version.ps1"
 
 $SRC_PATH = (Resolve-Path "$PSScriptRoot\..\..").Path
 Push-Location $SRC_PATH
+if ($env:DEBUG){
+    Write-Host "[DEBUG] Build Path: $SRC_PATH"
+}
 
-Remove-Item -Path "$SRC_PATH\bin\*.exe" -Force -ErrorAction Ignore
+# Remove-Item -Path "$SRC_PATH\bin\*.exe" -Force -ErrorAction Ignore
 $null = New-Item -Type Directory -Path bin -ErrorAction Ignore
 $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "" -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
+Build -BuildPath "server" -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
 Build -BuildPath "etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe" -Version $env:VERSION
 
 Pop-Location
