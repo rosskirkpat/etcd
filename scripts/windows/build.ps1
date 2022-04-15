@@ -34,7 +34,7 @@ function Build {
         # go install github.com/go-delve/delve/cmd/dlv@latest
     }
 
-    $GO_LDFLAGS = ("'{0} -X {1}/{2}/api/v3/version.GitSHA={4} {5}'" -f $Env:GO_LDFLAGS, $env:GIT_ORG, $env:GIT_REPO, $Commit)
+    $GO_LDFLAGS = ("'{0} -X {1}/{2}/api/v3/version.GitSHA={3}'" -f $Env:GO_LDFLAGS, $env:GIT_ORG, $env:GIT_REPO, $Commit)
     if ($env:DEBUG){
         Write-Host "[DEBUG] Running command: go build -o $Output -ldflags $linkerFlags"
     }
