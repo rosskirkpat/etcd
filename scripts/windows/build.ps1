@@ -36,9 +36,9 @@ function Build {
 
     $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
     if ($env:DEBUG){
-        Write-Host "[DEBUG] Running command: go build -ldflags $goFlags -o $Output $BuildPath"
+        Write-Host "[DEBUG] Running command: go build -ldflags $linkerFlags -o $Output $BuildPath"
     }
-    go build -ldflags $goFlags -o $Output $BuildPath
+    go build -ldflags $linkerFlags -o $Output $BuildPath
     if (-Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"
     }
@@ -56,7 +56,7 @@ Invoke-Script -File "$PSScriptRoot\version.ps1"
 
 $SRC_PATH = (Resolve-Path "$PSScriptRoot\..\..").Path
 Push-Location $SRC_PATH
-if ($env:DEBUG){
+if ($env:DEBUG) {
     Write-Host "[DEBUG] Build Path: $SRC_PATH"
 }
 

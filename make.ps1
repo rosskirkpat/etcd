@@ -30,7 +30,7 @@ param (
     [String]
     $Version,
     [Switch]
-    $GoDebug,
+    $Debug,
     # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
     [AllowEmptyString()]
     [String]
@@ -46,7 +46,7 @@ function Invoke-EtcdBuild() {
         [String]
         $Version,
         [Switch]
-        $GoDebug
+        $Debug
         # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
         # if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
         #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
@@ -114,7 +114,7 @@ function Get-Args() {
         $env:GIT_TAG = $env:VERSION
     }
 
-    if ($GoDebug.IsPresent) {
+    if ($Debug.IsPresent) {
         $env:DEBUG = "true"
     }
 
