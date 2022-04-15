@@ -32,13 +32,11 @@ param (
     [Switch]
     $GoDebug,
     # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
-    # [AllowEmptyString()]
     [AllowEmptyString()]
     [String]
-    $Script = "ci"  # Default invocation is full CI
+    $Script = "build"  # Default invocation is full CI
     
 )
-
 
 function Invoke-EtcdBuild() {
     [CmdletBinding()]
@@ -54,22 +52,22 @@ function Invoke-EtcdBuild() {
         #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
         #     }
         # })]
-        [String]
-        $Script
+        # [String]
+        # $Script
     )
 
     # TODO: Integration Tests
-    if ($env:SCRIPT_PATH -eq "integration") {
+    if ($env:SCRIPT_PATH.ToLower().Contains("integration")) {
         Invoke-EtcdIntegrationTests
     }
 
     # TODO: Additional Tests
-    if ($env:SCRIPT_PATH -eq "all") {
+    if ($env:SCRIPT_PATH.ToLower().Contains("all")) {
         Invoke-AllEtcd
     }
 
     if (Test-Path $env:SCRIPT_PATH) {
-        Write-Host ("Running scripts\windows\{0}.ps1" -f $env:SCRIPT_PATH)
+        Write-Host ("Running {0}.ps1" -f $env:SCRIPT_PATH)
         Invoke-Script -File $env:SCRIPT_PATH
         if ($LASTEXITCODE -ne 0) {
             exit $LASTEXITCODE
@@ -208,6 +206,7 @@ function Initialize-Environment() {
 
 function Invoke-EtcdIntegrationTests() {
     Write-Host "Running Integration Tests"
+    Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
     Invoke-Script -File scripts\windows\build.ps1
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
@@ -221,7 +220,12 @@ function Invoke-EtcdIntegrationTests() {
 
 function Invoke-AllEtcd() {
     Write-Host "Running CI and Integration Tests"
-    Invoke-Script -File scripts\windows\ci.ps1
+    Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
+    Invoke-Script -File scripts\windows\build.ps1
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+    Invoke-Script -File scripts\windows\integration.ps1
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }
@@ -245,4 +249,4 @@ Initialize-Environment
 Set-Environment
 Set-Path
 
-Invoke-EtcdBuild -Version $env:VERSION -Script $env:SCRIPT_PATH
+Invoke-EtcdBuild -Version $env:VERSION

@@ -7,7 +7,7 @@
 # )
 $ErrorActionPreference = 'Stop'
 
-Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
+Import-Module -WarningAction Ignore -Name "$PSScriptRoot\utils.psm1"
 
 
 function Build {
@@ -51,7 +51,7 @@ trap {
 
 Invoke-Script -File "$PSScriptRoot\version.ps1"
 
-$SRC_PATH = (Resolve-Path "$PSScriptRoot\..").Path
+$SRC_PATH = (Resolve-Path "$PSScriptRoot\..\..").Path
 Push-Location $SRC_PATH
 
 Remove-Item -Path "$SRC_PATH\bin\*.exe" -Force -ErrorAction Ignore
@@ -60,7 +60,7 @@ $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO" -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
-Build -BuildPath "$env:GIT_ORG/$env:GIT_REPO/etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe" -Version $env:VERSION
+Build -BuildPath "" -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
+Build -BuildPath "etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe" -Version $env:VERSION
 
 Pop-Location
