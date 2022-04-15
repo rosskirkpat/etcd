@@ -66,7 +66,7 @@ $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "server" -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
-Build -BuildPath "etcdctl" -Commit $env:COMMIT -Output "bin\etcdctl.exe" -Version $env:VERSION
+Build -BuildPath "server/." -Commit $env:COMMIT -Output "bin\etcd.exe" -Version $env:VERSION
+Build -BuildPath "etcdctl/." -Commit $env:COMMIT -Output "bin\etcdctl.exe" -Version $env:VERSION
 
 Pop-Location
