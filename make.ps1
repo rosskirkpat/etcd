@@ -112,9 +112,9 @@ function Get-Args() {
         $env:GIT_TAG = $env:VERSION
     }
 
-    if ($Debug.IsPresent) {
-        $env:DEBUG = "true"
-    }
+    # if ($Debug.IsPresent) {
+    #     $env:DEBUG = "true"
+    # }
 
     if ($Script) {
         $env:SCRIPT_PATH = ("{0}\scripts\windows\{1}.ps1" -f $PSScriptRoot, $Script)
@@ -244,6 +244,11 @@ if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$Script.ps1")) {
     throw "$Script is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
 }
 $env:SCRIPT_PATH = $Script
+
+if ($Debug.IsPresent) {
+    Write-InfoLog "Debug mode is enabled"
+    $env:DEBUG = "true"
+}
 
 Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
 $ErrorActionPreference = 'Stop'
