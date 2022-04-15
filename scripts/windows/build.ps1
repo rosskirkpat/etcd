@@ -34,7 +34,7 @@ function Build {
         # go install github.com/go-delve/delve/cmd/dlv@latest
     }
 
-    $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
+    $linkerFlags = ('{0} -X=go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
     if ($env:DEBUG){
         Write-Host "[DEBUG] Running command: go build -o $Output -ldflags $linkerFlags $BuildPath"
     }
@@ -66,7 +66,7 @@ $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "server\." -Commit $env:COMMIT -Output "..\bin\etcd.exe" -Version $env:VERSION
-Build -BuildPath "etcdctl\." -Commit $env:COMMIT -Output "..\bin\etcdctl.exe" -Version $env:VERSION
+Build -BuildPath "server/main.go" -Commit $env:COMMIT -Output "..\bin\etcd.exe" -Version $env:VERSION
+Build -BuildPath "etcdctl/main.go" -Commit $env:COMMIT -Output "..\bin\etcdctl.exe" -Version $env:VERSION
 
 Pop-Location
