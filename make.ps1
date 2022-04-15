@@ -46,7 +46,7 @@ function Invoke-EtcdBuild() {
         [String]
         $Version,
         [Switch]
-        $GoDebug,
+        $GoDebug
         # [ValidateScript({Test-Path "$PSScriptRoot\scripts\windows\$_.ps1"})]
         # if (-Not (Test-Path "$PSScriptRoot\scripts\windows\$_.ps1")) {
         #         throw "$_ is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
@@ -65,6 +65,16 @@ function Invoke-EtcdBuild() {
     if ($env:SCRIPT_PATH.ToLower().Contains("all")) {
         Invoke-AllEtcd
     }
+
+    if ($env:SCRIPT_PATH.ToLower().Contains("build")) {
+
+    Write-Host "Running Integration Tests"
+    Import-Module -WarningAction Ignore -Name "$PSScriptRoot\scripts\windows\utils.psm1"
+    Invoke-Script -File scripts\windows\build.ps1
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+}
 
     if (Test-Path $env:SCRIPT_PATH) {
         Write-Host ("Running {0}.ps1" -f $env:SCRIPT_PATH)
@@ -226,11 +236,11 @@ function Invoke-AllEtcd() {
         exit $LASTEXITCODE
     }
     Invoke-Script -File scripts\windows\integration.ps1
-    if ($LASTEXITCODE -ne 0) {
-        exit $LASTEXITCODE
-    }
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
     exit 0
-}
+    }
 
 If (-Not (Test-Path "$PSScriptRoot\scripts\windows\$Script.ps1")) {
     throw "$Script is not a valid script name in $(echo $PSScriptRoot\scripts\windows)"
