@@ -36,7 +36,7 @@ function Build {
 
     $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkerFlags, $Commit)
     go build -ldflags $goFlags -o $Output $BuildPath
-    if (Not $?) {
+    if (-Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"
     }
 }
