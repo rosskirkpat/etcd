@@ -34,7 +34,7 @@ function Build {
         # go install github.com/go-delve/delve/cmd/dlv@latest
     }
 
-    $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkFlags, $Commit)
+    $linkerFlags = ("'{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}'" -f $linkFlags, $Commit)
     if ($env:DEBUG){
         Write-Host "[DEBUG] Running command: go build -o $Output -ldflags $linkerFlags"
     }
