@@ -29,17 +29,17 @@ function Build {
     $linkFlags = '-s -w -gcflags=all=-dwarf=false -extldflags "-static"'
 
     if ($env:DEBUG) {
-        $linkFlags = "-v '-gcflags=all=-N -l'"
+        $linkFlags = '-v -gcflags=all=-N -l'
         Write-Host ('Debug flag passed, changing ldflags to {0}' -f $linkFlags)
         # go install github.com/go-delve/delve/cmd/dlv@latest
     }
 
-    $linkerFlags = ('"{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}"' -f $linkFlags, $Commit)
+    $linkerFlags = ('{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}' -f $linkFlags, $Commit)
     if ($env:DEBUG){
         Write-Host "[DEBUG] Running command: go build -o $Output -ldflags $linkerFlags"
     }
     Push-Location $BuildPath
-    go build -o $Output -ldflags $linkerFlags .
+    go build -o $Output -ldflags "$linkerFlags" .
     Pop-Location
     if (-Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"
