@@ -13,9 +13,9 @@ Import-Module -WarningAction Ignore -Name "$PSScriptRoot\utils.psm1"
 function Build {
     # [CmdletBinding()]
     param (
-        [Parameter()]
-        [String]
-        $Version,
+        # [Parameter()]
+        # [String]
+        # $Version,
         [parameter()]
         [string]
         $BuildPath,
@@ -26,20 +26,21 @@ function Build {
         [string]
         $Output        
     )
-    $linkFlags = '-s -w -gcflags=all=-dwarf=false -extldflags "-static"'
+    $Env:GO_LDFLAGS = '-s -w -gcflags=all=-dwarf=false -extldflags "-static"'
 
     if ($env:DEBUG) {
-        $linkFlags = '-v -gcflags=all=-N -l'
+        $Env:GO_LDFLAGS = '-v -gcflags=all=-N -l'
         Write-Host ('Debug flag passed, changing ldflags to {0}' -f $linkFlags)
         # go install github.com/go-delve/delve/cmd/dlv@latest
     }
 
-    $linkerFlags = ("'{0} -X go.etcd.io/etcd/pkg/defaults.GitSHA={1}'" -f $linkFlags, $Commit)
+    $GO_LDFLAGS = ("'{0} -X {1}/{2}/api/v3/version.GitSHA={4} {5}'" -f $Env:GO_LDFLAGS, $env:GIT_ORG, $env:GIT_REPO, $Commit)
     if ($env:DEBUG){
         Write-Host "[DEBUG] Running command: go build -o $Output -ldflags $linkerFlags"
     }
+
     Push-Location $BuildPath
-    go build -o $Output -ldflags "$linkerFlags" .
+    go build -o $Output -ldflags $GO_LDFLAGS .
     Pop-Location
     if (-Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"
@@ -68,7 +69,7 @@ $env:GOARCH = $env:ARCH
 $env:GOOS = 'windows'
 $env:CGO_ENABLED = 0
 
-Build -BuildPath "$SRC_PATH/server" -Commit $env:COMMIT -Output "..\bin\etcd.exe" -Version $env:VERSION
-Build -BuildPath "$SRC_PATH/etcdctl" -Commit $env:COMMIT -Output "..\bin\etcdctl.exe" -Version $env:VERSION
+Build -BuildPath "$SRC_PATH/server" -Commit $env:COMMIT -Output "..\bin\etcd.exe" # -Version $env:VERSION
+Build -BuildPath "$SRC_PATH/etcdctl" -Commit $env:COMMIT -Output "..\bin\etcdctl.exe" # -Version $env:VERSION
 
 Pop-Location

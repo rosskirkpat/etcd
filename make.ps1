@@ -33,8 +33,7 @@ param (
     $GoDebug,
     [AllowEmptyString()]
     [String]
-    $Script = "build"  # Default invocation is full CI
-    
+    $Script = "build"  # Default invocation is full CI    
 )
 
 function Invoke-EtcdBuild() {
@@ -133,7 +132,7 @@ function Set-Environment() {
 
     $VERSION = $env:VERSION
     if (-Not $VERSION) {
-        $env:VERSION = $(git rev-parse --short HEAD)
+        $env:VERSION = "$(git rev-parse --short HEAD)"
     }
 
     $GIT_ORG = $env:GIT_ORG
