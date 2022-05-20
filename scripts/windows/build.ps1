@@ -19,21 +19,24 @@ function Build {
         [string]
         $Output        
     )
-    $env:GO_LDFLAGS = '-s -w -gcflags=all=-dwarf=false -extldflags "-static"'
+    $GO_BFLAGS  = ''
+    $GO_GCFLAGS = '-dwarf=false' # Avoid generating DWARF symbols in the first hand  
+    $env:GO_LDFLAGS = '-s -w -extldflags "-static"' # Omit debug symbols & DWARF symbol table & do not link with shared libs
 
     if ($env:DEBUG) {
-        $env:GO_LDFLAGS = '-v -gcflags=all=-N -l'
-        Write-LogInfo ('Debug flag passed, changing ldflags to {0}' -f $env:GO_LDFLAGS )
-        # go install github.com/go-delve/delve/cmd/dlv@latest
+        $GO_BFLAGS  = '-v'     # Verbose compilation mode (switch to -x for debug mode)
+        $GO_GCFLAGS = '-N -l'  # Disable optimization + Disable inlining func 
+        $env:GO_LDFLAGS = ''   # Override GO_LDFLAGS to keep debug symbols & dwarf symbol table
+        Write-LogInfo ('Debug flag passed, changing gcflags to {0}, ldflags to {1}' -f $GO_GCFLAGS, $env:GO_LDFLAGS )
     }
-
-    $GO_LDFLAGS = ("'{0} -X {1}/{2}/version.GitSHA={3}'" -f $env:GO_LDFLAGS, $env:ORG_PATH, $env:GIT_REPO, $Commit)
-    if ($env:DEBUG){
-        Write-LogInfo "[DEBUG] Running command: go build -o $Output -ldflags $GO_LDFLAGS"
+    $VERSION_SYMBOL="{0}/{1}/api/v3/version.GitSHA" -f $env:ORG_PATH, $env:GIT_REPO
+    $GO_LDFLAGS = ("{0} -X '{1}={2}'" -f $env:GO_LDFLAGS, $VERSION_SYMBOL, $Commit)
+    if ($env:DEBUG) {
+        Write-LogInfo "[DEBUG] Running command: go build $GO_BFLAGS -o $Output -gcflags=all='$GO_GCFLAGS' -ldflags='$GO_LDFLAGS'"
     }
 
     Push-Location $BuildPath
-    go build -o $Output -ldflags $GO_LDFLAGS .
+    go build $GO_BFLAGS -o $Output -gcflags=all="$GO_GCFLAGS" -ldflags="$GO_LDFLAGS" .
     Pop-Location
     if (-Not $?) {
         Write-LogFatal "go build for $BuildPath failed!"

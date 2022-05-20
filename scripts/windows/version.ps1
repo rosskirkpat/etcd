@@ -27,11 +27,18 @@ if (-not $ARCH) {
 }
 $env:ARCH = $ARCH
 
-$buildTags = @{ "17763" = "1809"; "19042" = "20H2"; "20348" = "ltsc2022";}
+$buildTags = @{ "17763" = "1809" 
+                "18362" = "1903"
+                "18363" = "1909"
+                "19041" = "2004"
+                "19042" = "20H2"
+                "20348" = "ltsc2022"
+                "22000"  = "ltsc2022"}
 $buildNumber = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\' -ErrorAction Ignore).CurrentBuildNumber
 $SERVERCORE_VERSION = $buildTags[$buildNumber]
 if (-not $SERVERCORE_VERSION) {
-    $env:SERVERCORE_VERSION = "1809"
+    $SERVERCORE_VERSION = "1809"
+    $env:SERVERCORE_VERSION = $SERVERCORE_VERSION
 }
 
 Write-LogInfo "ARCH: $ARCH"

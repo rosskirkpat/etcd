@@ -85,15 +85,15 @@ function Get-Args() {
     }
 }
 
-function Set-Environment() {
+function Set-Environment {
     $GIT_VERSION = $env:GIT_VERSION
     if (-Not $GIT_VERSION) {        
-        $env:GIT_VERSION = "2.35.2"
+        $env:GIT_VERSION = "2.35.3"
     }
 
     $GOLANG_VERSION = $env:GOLANG_VERSION
     if (-Not $GOLANG_VERSION) {        
-        $env:GOLANG_VERSION = "1.17.8"
+        $env:GOLANG_VERSION = "1.18.2"
     }
 
     $ORG_PATH = $env:ORG_PATH
@@ -117,13 +117,20 @@ function Set-Environment() {
     # }
 }
 
-function Set-Path() {
-    # ideally, gopath would be C:\go to match Linux a bit closer
-    # but C:\go is the recommended install path for Go itself on Windows, so we use C:\gopath
-    $env:PATH += ";C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin;C:\gopath\bin;C:\go\bin"
+function Set-Path {
     $environment = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
-    $environment = $environment.Insert($environment.Length, ";C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin;C:\gopath\bin;C:\go\bin")
-    [System.Environment]::SetEnvironmentVariable("Path", $environment, "Machine")
+    if ($null -eq (Get-Command "go" -ErrorAction SilentlyContinue)) {
+        # ideally, gopath would be C:\go to match Linux a bit closer
+        # but C:\go is the recommended install path for Go itself on Windows, so we use C:\gopath
+        $env:PATH += ";C:\gopath\bin;C:\go\bin"
+        $environment = $environment.Insert($environment.Length, ";C:\gopath\bin;C:\go\bin")    
+        [System.Environment]::SetEnvironmentVariable("Path", $environment, "Machine")    
+    }
+    if ($null -eq (Get-Command "git" -ErrorAction SilentlyContinue)) {
+        $env:PATH += ";C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin"
+        $environment = $environment.Insert($environment.Length, ";C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin")
+        [System.Environment]::SetEnvironmentVariable("Path", $environment, "Machine")    
+    }
 }
     
 function Test-Architecture() {
@@ -142,7 +149,7 @@ function Install-Git() {
         Remove-Item -Force -Recurse -Path c:\git.zip
         Pop-Location
     } else {
-        Write-LogInfo ('{0} found in PATH, skipping install ...' -f $(git version))
+        Write-LogInfo ('{0} found in PATH, skipping git install ...' -f $(git version))
     }
 }
     
@@ -206,6 +213,9 @@ function Invoke-AllEtcd() {
     exit 0
 }
 
+<##################################################################################################################################
+  Entry point
+###################################################################################################################################>
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 Set-StrictMode -Version Latest
@@ -227,6 +237,7 @@ Test-Architecture
 Initialize-Environment
 Set-Environment
 Set-Path
+
 # This is required as long as the symlinks for client/v3/*_test.go -> tests/integration/clientv3/examples/*_test.go exist
 git config --global core.symlinks true
 
